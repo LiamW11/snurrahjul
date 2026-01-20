@@ -5,7 +5,12 @@ ChatGPT användes för att skriva tydligare prompts till Claude.
 - https://chatgpt.com/share/696f4682-c8bc-800a-a619-9ca424115de9
 
 **Prompt 1**
+- *Syfte:* Skapa en tydlig och meningsfull prompt till Claude för att utveckla och förtydliga våra ideer.
+- *Förväntad output:* En bra och tydlig prompt som instruerade Claude tydligt för att få ett bra resultat.
+- *Faktisk output:* En tydlig prompt som instruerade Claude på bra vis men behövde tydligöras en liten del.
+- *Vad fungerade, vad saknades?* Det gick bra med att få fram en prompt och granska våran projektbeskrivning. Dock ansåg AI:n att vi saknade en del angående vilket ramverk vi skulle ha och hur koden skulle vara uppdelad.
 ```
+
 Jag ska skapa en spin-the-wheel applikation eftersom jag fått i uppgift att träna på ai-prompting och dokumentation.
 
 Jag har lagt till alla önskade features och vad som målet är.
@@ -33,7 +38,12 @@ Målgrupp: Unga vuxna 18-25.
 Vad är ett lyckat resultat: Alla features finns med och inga buggar som hindrar funktionaliteten finns i applikationen.
 ```
 
-**Prompt 2:** Följdfrågor den ställde eftersom första prompten inte täckte allting.
+**Prompt 2:**
+- *Syfte:* Följdfrågor den ställde eftersom första prompten inte täckte allting.
+- *Förväntad output:* En prompt som täcker alla aspekter vi tänkte på.
+- *Faktisk output:* En prompt som täcker alla aspekter vi tänkte på fast fortfarande med små fel i UI.
+- *Vad fungerade, vad saknades?* Vi fick en tydlig prompt som täckte allt vi ville ha med i applikationen och la upp det på ett sätt så att Claude kunde implementera allting. Vi kunde dock ha varit mer specifika med hur vi ville implementera vissa funktioner, exempelvis hur man valde färg för varje tårtdel av hjulet.
+
 ```
 Svar på följdfrågor:
 1. Det ska vara en webbapplikation
@@ -45,6 +55,11 @@ Claude användes för att skapa applikationen.
 - https://claude.ai/share/5ada5390-afe3-46bf-b378-16882445e40c
 
 **Prompt 1**
+- *Syfte:* Skapa en första itteration av vår applikation.
+- *Förväntad output:* En fungerade applikation som mötte alla krav.
+- *Faktisk output:* En applikation som fungerade som den ska men med brister i UI:n.
+- *Vad fungerade, vad saknades?* Alla funktioner fungerade direkt. Dock var UI inte korrekt då exempelvis spaken inte rörde sig som vi ville. Pilen som pekar på svaret man fick visade fel och "lägg till" knappen för flera objekt gick utanför sin egna ruta.
+
 ```
 Du är en erfaren fullstack webbutvecklare ska implementera en webbaserad spin-the-wheel-applikation. Syftet med uppgiften är att träna på AI-prompting och dokumentation, så lösningen ska vara tydligt strukturerad, lätt att följa och väl kommenterad.
 
@@ -83,7 +98,12 @@ Viktigt
 Implementera lösningen så att alla krav uppfylls utan buggar som hindrar funktionaliteten.
 ```
 
-**Prompt 2** Denna prompt är korrigerande eftersom att första resultatet inte var felfritt
+**Prompt 2**
+- *Syfte:* Denna prompt är korrigerande eftersom att första resultatet inte var felfritt.
+- *Förväntad output:* En applikation som inte har några fel överhuvudtaget angående funktionaliteten eller UI:n.
+- *Faktisk output:* En applikation som har löst majoriteten av alla UI problem men med några problem kvar.
+- *Vad fungerade, vad saknades?* Till sort del fungerade all kod utan problem. De problem som uppståd angick främst pilen som pekade på svaret man fick. I den andra prompten så bad vi den korrigera problemet som uppstod. AI gjorde dock inte detta så en av gruppmedlemmarna gick in i koden och löste det manuellt.
+
 ```
 Pilen som pekar på vad resultatet är har hamnat fel. Den ska vara på höger sida men har hamnat högst upp.
 Spaken fungerar ej som den ska. Den dras åt höger istället för nedåt när man trycker på den.
