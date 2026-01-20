@@ -82,3 +82,11 @@ Viktigt
 * Fokusera på korrekt funktionalitet, tydlig struktur och läsbar kod
 Implementera lösningen så att alla krav uppfylls utan buggar som hindrar funktionaliteten.
 ```
+
+**Prompt 2** Denna prompt är korrigerande eftersom att första resultatet inte var felfritt
+```
+Pilen som pekar på vad resultatet är har hamnat fel. Den ska vara på höger sida men har hamnat högst upp.
+Spaken fungerar ej som den ska. Den dras åt höger istället för nedåt när man trycker på den.
+Lägg till knappen har hamnat utanför sin ruta.
+Istället för att man skriver in hexkoden för färgen borde det finnas ett färghjul man kan välja färg från (det finns en sådan typ av input i html är jag ganska säker på)
+```
