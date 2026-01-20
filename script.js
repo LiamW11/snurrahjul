@@ -121,6 +121,7 @@ function drawWheel() {
         ctx.textAlign = 'center';
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 18px Arial';
+        ctx.clip();
         ctx.fillText(item.text, radius * 0.65, 0);
         ctx.restore();
     });
@@ -134,11 +135,14 @@ function drawWheel() {
     ctx.lineWidth = 5;
     ctx.stroke();
     
-    // Rita pekare (triangel överst)
+    // Rita pekare (triangel till höger)
+    const pointerX = centerX;
+    const pointerY = centerY + radius + 30;
+    
     ctx.beginPath();
-    ctx.moveTo(centerX, centerY - radius - 30);
-    ctx.lineTo(centerX - 20, centerY - radius - 10);
-    ctx.lineTo(centerX + 20, centerY - radius - 10);
+    ctx.moveTo(pointerX + 20, pointerY);
+    ctx.lineTo(pointerX - 20, pointerY);
+    ctx.lineTo(pointerX, pointerY - 20);
     ctx.closePath();
     ctx.fillStyle = '#FF6B6B';
     ctx.fill();
@@ -203,8 +207,8 @@ function spinWheel() {
  * Baserat på den slutliga rotationen
  */
 function getSelectedItem() {
-    // Pekaren pekar uppåt, så vi måste kompensera
-    const normalizedRotation = (360 - (currentRotation % 360)) % 360;
+    // Pekaren pekar åt höger, kompensera för det
+    const normalizedRotation = (90 - (currentRotation % 360) + 360) % 360;
     const anglePerItem = 360 / items.length;
     const selectedIndex = Math.floor(normalizedRotation / anglePerItem);
     return items[selectedIndex];
@@ -311,15 +315,18 @@ function removeItem(index) {
  * Ändrar färg på ett objekt
  */
 function changeColor(index) {
-    const newColor = prompt('Ange färg (hex-kod, t.ex. #FF6B6B):', items[index].color);
+    // Skapa en temporär color input
+    const colorInput = document.createElement('input');
+    colorInput.type = 'color';
+    colorInput.value = items[index].color;
     
-    if (newColor && /^#[0-9A-F]{6}$/i.test(newColor)) {
-        items[index].color = newColor;
+    colorInput.addEventListener('change', (e) => {
+        items[index].color = e.target.value;
         drawWheel();
         updateItemsList();
-    } else if (newColor) {
-        alert('Ogiltig färgkod! Använd format: #RRGGBB');
-    }
+    });
+    
+    colorInput.click();
 }
 
 /**
@@ -373,13 +380,13 @@ let leverPulled = false;
 
 document.getElementById('lever').addEventListener('mousedown', (e) => {
     leverPulled = true;
-    e.target.style.transform = 'rotate(30deg)';
+    e.target.style.transform = 'translateY(185px)';
 });
 
 document.addEventListener('mouseup', () => {
     if (leverPulled) {
         const lever = document.getElementById('lever');
-        lever.style.transform = 'rotate(0deg)';
+        lever.style.transform = 'translateY(0)';
         leverPulled = false;
         spinWheel();
     }
