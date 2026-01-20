@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin the Wheel - Beslutsstöd</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes confetti-fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s linear forwards;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen">
+    <!-- Huvudcontainer -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-purple-600 mb-2">🎯 Spin the Wheel</h1>
+            <p class="text-gray-600">Kan inte bestämma dig? Låt hjulet välja åt dig!</p>
+        </header>
+
+        <!-- Huvudinnehåll: Layout med två kolumner -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            
+            <!-- Vänster kolumn: Hjul och spak -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-xl p-8">
+                    <div class="flex items-center justify-center gap-8">
+                        <!-- Canvas för hjulet -->
+                        <canvas id="wheelCanvas" width="500" height="500" class="cursor-pointer transition-transform hover:scale-105"></canvas>
+                        
+                        <!-- Spak -->
+                        <div class="flex flex-col items-center">
+                            <div id="lever" class="w-8 h-64 bg-gradient-to-b from-red-600 to-red-800 rounded-full cursor-pointer shadow-lg transition-transform origin-top relative">
+                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-red-600 rounded-full border-4 border-red-800"></div>
+                            </div>
+                            <p class="mt-4 text-sm text-gray-600">Dra i spaken!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historik -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 mt-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">📜 Historik (5 senaste)</h2>
+                    <div id="history" class="space-y-2">
+                        <p class="text-gray-500 italic">Inga resultat än...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Höger kolumn: Kontroller -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-xl p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">⚙️ Hantera objekt</h2>
+                    
+                    <!-- Formulär för att lägga till objekt -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Lägg till nytt alternativ</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="itemInput" placeholder="T.ex. Pizza" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <button id="addBtn" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors font-medium">Lägg till</button>
+                        </div>
+                    </div>
+
+                    <!-- Lista över objekt -->
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-700 mb-3">Dina alternativ</h3>
+                        <div id="itemsList" class="space-y-2 max-h-96 overflow-y-auto">
+                            <!-- Objekten kommer att läggas till här dynamiskt -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup för resultat -->
+    <div id="resultPopup" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center transform scale-0 transition-transform duration-300" id="popupContent">
+            <h2 class="text-3xl font-bold text-purple-600 mb-4">🎉 Resultatet är...</h2>
+            <p id="resultText" class="text-5xl font-bold text-gray-800 mb-6"></p>
+            <button id="closePopup" class="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium text-lg">Stäng</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
