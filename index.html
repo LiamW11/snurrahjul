@@ -34,7 +34,7 @@
                 <div class="bg-white rounded-2xl shadow-xl p-8">
                     <div class="flex items-center justify-center gap-8">
                         <!-- Canvas för hjulet -->
-                        <canvas id="wheelCanvas" width="500" height="500" class="cursor-pointer transition-transform hover:scale-105"></canvas>
+                        <canvas id="wheelCanvas" width="500" height="500" class="cursor-pointer transition-transform hover:scale-105 -rotate-90"></canvas>
                         
                         <!-- Spak -->
                         <div class="flex flex-col items-center justify-start h-96">
@@ -49,7 +49,7 @@
                 <!-- Historik -->
                 <div class="bg-white rounded-2xl shadow-xl p-6 mt-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">📜 Historik (5 senaste)</h2>
-                    <div id="history" class="space-y-2">
+                    <div id="history" class="space-y-2 w-full truncate">
                         <p class="text-gray-500 italic">Inga resultat än...</p>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
     <div id="resultPopup" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center transform scale-0 transition-transform duration-300" id="popupContent">
             <h2 class="text-3xl font-bold text-purple-600 mb-4">🎉 Resultatet är...</h2>
-            <p id="resultText" class="text-5xl font-bold text-gray-800 mb-6"></p>
+            <p id="resultText" class="text-5xl font-bold text-gray-800 mb-6 w-full truncate"></p>
             <button id="closePopup" class="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium text-lg">Stäng</button>
         </div>
     </div>

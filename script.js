@@ -121,6 +121,7 @@ function drawWheel() {
         ctx.textAlign = 'center';
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 18px Arial';
+        ctx.clip();
         ctx.fillText(item.text, radius * 0.65, 0);
         ctx.restore();
     });
@@ -135,13 +136,13 @@ function drawWheel() {
     ctx.stroke();
     
     // Rita pekare (triangel till höger)
-    const pointerX = centerX + radius + 15;
-    const pointerY = centerY;
+    const pointerX = centerX;
+    const pointerY = centerY + radius + 30;
     
     ctx.beginPath();
     ctx.moveTo(pointerX + 20, pointerY);
+    ctx.lineTo(pointerX - 20, pointerY);
     ctx.lineTo(pointerX, pointerY - 20);
-    ctx.lineTo(pointerX, pointerY + 20);
     ctx.closePath();
     ctx.fillStyle = '#FF6B6B';
     ctx.fill();
