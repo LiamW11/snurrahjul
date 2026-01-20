@@ -378,12 +378,12 @@ function updateHistory() {
  */
 let leverPulled = false;
 
-document.getElementById('lever').addEventListener('mousedown', (e) => {
+document.getElementById('lever').addEventListener('dragstart', (e) => {
     leverPulled = true;
     e.target.style.transform = 'translateY(185px)';
 });
 
-document.addEventListener('mouseup', () => {
+document.addEventListener('dragend', () => {
     if (leverPulled) {
         const lever = document.getElementById('lever');
         lever.style.transform = 'translateY(0)';
