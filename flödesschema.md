@@ -1,34 +1,31 @@
 # Utvecklingsprocess – AI-stödd applikation
-### 2026-01-20
+
 ```mermaid
-flowchart TD
-    A[Idé] --> B[Formulera en projektbeskrivning];
+flowchart LR
 
-    B --> C[Prompta ChatGPT för att förtydliga våra idéer];
-    C --> D[Prompta Claude för att skapa vår applikation];
+subgraph D1[2026-01-20]
+    A1[Idé] --> B1[Formulera en projektbeskrivning]
+    B1 --> C1[Prompta ChatGPT för att förtydliga våra idéer]
+    C1 --> D1b[Prompta Claude för att skapa vår applikation]
+    D1b --> E1[Implementera Claude-kod i VS Code]
+    E1 --> F1[Testa applikation för buggar]
+    F1 --> G1[Sammanställa alla fel]
+    G1 --> H1[Prompta Claude igen med nya insikter]
+    H1 --> I1[Implementera ny kod]
+    I1 --> J1[Testa igen]
+    J1 --> K1[Sammanställa fel igen]
+    K1 --> L1[Fixa koden själv]
+    L1 --> M1[Slutför applikation]
+end
 
-    D --> E[Implementera Claude-kod i VS code];
-    E --> F[Testa applikation för att se vilka buggar som uppstår];
-    F --> G[Sammanställa alla fel vi hittade med applikationen]
+subgraph D2[2026-01-21]
+    A2[Dagens online lektion] --> B2[Formulera problemet med inloggningen]
+    B2 --> C2[Prompta ChatGPT om inloggningsidéer]
+    C2 --> D2b[Prompta Claude för att validera prompten]
+    D2b --> E2[Svara på Claudes frågor]
+    E2 --> F2[Implementera kod från Claude]
+    F2 --> G2[Sammanställa att allt fungerar]
+end
 
-    G --> H[Prompta om Claude med nya insikter efter våra tester];
-    H --> I[Implementera ny kod från Claude];
-    I --> J[Testa applikation igen och leta efter buggar];
-    J --> K[Sammanställa alla fel vi hittade med applikationen]
-
-    K --> L[Fixa koden själv];
-    L --> M[Slutför applikation];
-```
-
-### 2026-01-21
-```mermaid
-flowchart TD
-    A[Dagens online lektion] --> B[Formulera problemet med inloggningen];
-
-    B --> C[Prompta ChatGPT för att förtydliga våra idéer kring hur en inloggningsfunktion kan se ut];
-    C --> D[Prompta Claude för säkerställa att Prompten från ChatGPT har nog med information];
-
-    D --> E[Svara på frågor som Claude hade kring inloggningen];
-    E --> F[Implementera kod vi fick från Claude];
-    F --> G[Sammanställa att allting fungerar som det ska]
+D1 --- D2
 ```
