@@ -1,5 +1,5 @@
 # Utvecklingsprocess – AI-stödd applikation
-
+### 2026-01-20
 ```mermaid
 flowchart TD
     A[Idé] --> B[Formulera en projektbeskrivning];
@@ -18,4 +18,17 @@ flowchart TD
 
     K --> L[Fixa koden själv];
     L --> M[Slutför applikation];
+```
+
+### 2026-01-21
+```mermaid
+flowchart TD
+    A[Dagens online lektion] --> B[Formulera problemet med inloggningen];
+
+    B --> C[Prompta ChatGPT för att förtydliga våra idéer kring hur en inloggningsfunktion kan se ut];
+    C --> D[Prompta Claude för säkerställa att Prompten från ChatGPT har nog med information];
+
+    D --> E[Svara på frågor som Claude hade kring inloggningen];
+    E --> F[Implementera kod vi fick från Claude];
+    F --> G[Sammanställa att allting fungerar som det ska]
 ```
