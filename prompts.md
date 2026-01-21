@@ -1,5 +1,6 @@
 ## Dokumentation över alla använda prompts och till vilken AI
 
+## 2026-01-20
 ### ChatGPT
 ChatGPT användes för att skriva tydligare prompts till Claude.
 - https://chatgpt.com/share/696f4682-c8bc-800a-a619-9ca424115de9
@@ -110,3 +111,32 @@ Spaken fungerar ej som den ska. Den dras åt höger istället för nedåt när m
 Lägg till knappen har hamnat utanför sin ruta.
 Istället för att man skriver in hexkoden för färgen borde det finnas ett färghjul man kan välja färg från (det finns en sådan typ av input i html är jag ganska säker på)
 ```
+
+## 2026-01-21
+
+### ChatGPT
+- https://chatgpt.com/share/69709f87-1aa8-800a-885e-6100a2194676
+**Prompt 1**
+- *Syfte:* Skapa en så bra som möjlig prompt till Claude.
+- *Förväntad output:* Ett prompt som kan instruera Claude till att utföra det arbete vi vill att den ska göra.
+- *Faktisk output:* 
+- *Vad fungerade, vad saknades?* 
+
+```
+Du är en erfaren fullstack utvecklare som arbetat mycket med att skriva prompts till claude AI.
+
+Hjälp mig förtydliga denna prompt så att Claude förstår den och kan arbeta med det på bästa sätt.
+
+Prompten: "Du är en erfaren fullstack webbutvecklare som har gjort många applikation med login funktioner med google auth och firebase.
+
+Du ska skapa en login till en spin-the-wheel applikation med google auth och firebase. Användare ska kunna spara sina resultat de får från hjulet. Det som ska sparas ska alltså vara alla olika alternativ som fanns på hjulet och det svar man fick.
+
+Login sidan ska vara på samma sida som spin-the-wheel applikationen, alltså ska inte någon ny html fil som länkar vidare skapas. Det ska alltså vara en sorts modal som sätts över applikationen. Själva spin-the-wheel delen ska vara suddig tills man har loggat in.
+
+Just nu finns det redan en funktion som sparar det senaste 5 resultaten man fick från hjulet. Ändra om denna funktion så att det blir en dropdown meny där man kan see alla sina resultat med alla alternativ på hjulet och vilket resultat man fick. Numrera sedan dessa i ordningen de sparades. Det ska inte finnas någon gräns över hur många resultat som sparas.
+
+Gå igenom ditt svar steg för steg och var kritisk mot dig själv för att komma fram till bästa lösningen. Ändra inte befintlig kod utan att tänka igenom först och ställ frågor till mig ifall någonting är otydligt innan du börjar koda över huvudtaget."
+```
+
+### Claude
+- 
