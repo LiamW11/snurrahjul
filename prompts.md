@@ -139,4 +139,73 @@ Gå igenom ditt svar steg för steg och var kritisk mot dig själv för att komm
 ```
 
 ### Claude
-- 
+- https://claude.ai/share/f4ef09f5-cdc8-4010-95b8-6c209a889c42
+**Prompt 1**
+- *Syfte:* Säkerställa att prompten vi fick från ChatGPT har tillräckligt med information för att kunna börja arbeta.
+- *Förväntad output:* Att Claude skulle ställa frågor som gjorde att den hade tillräkligt med information.
+- *Faktisk output:* Claude ställde viktiga frågor utan att skriva någon kod.
+- *Vad fungerade, vad saknades?* Allting fungerade som det skulle. Vi bad Claude att ställa frågor ifall den var osäker på någonting, vilket Claude sedan gjorde. Ingenting gick fel.
+```
+Du är en senior fullstack webbutvecklare med djup erfarenhet av:
+* Firebase (Auth + Firestore/Realtime DB)
+* Google OAuth
+* Frontend-arkitektur
+* Att bygga produktionstjänster med bra UX och säkerhet.
+Kontext
+Jag har en befintlig webbaserad spin-the-wheel-applikation. Idag finns:
+* En enkel funktion som sparar de senaste 5 resultaten lokalt.
+* Ingen inloggning.
+* Allt körs i en single-page-app (ingen routing mellan HTML-filer).
+Mål
+Jag vill lägga till:
+1. Google-inloggning via Firebase.
+2. Möjlighet för varje användare att spara alla sina resultat i molnet.
+3. En förbättrad UI för att visa alla tidigare resultat.
+Funktionella krav
+Login
+* Inloggning ska ske med Google Auth via Firebase.
+* Login ska ske i form av en modal overlay ovanpå befintlig sida.
+* Spin-the-wheel-appen ska vara suddig/disabled tills användaren är inloggad.
+* Ingen ny HTML-sida får skapas – allt ska ske på samma sida.
+Resultat
+Varje sparat resultat ska innehålla:
+* Alla alternativ som fanns på hjulet vid snurrtillfället.
+* Det valda resultatet.
+* Tidsstämpel.
+Historik
+* Den nuvarande funktionen som sparar senaste 5 resultat ska ersättas.
+* Istället ska det vara en dropdown-meny där användaren kan:
+   * Se alla sina tidigare resultat.
+   * Se dem numrerade i den ordning de sparades.
+   * Det ska inte finnas någon maxgräns.
+Icke-funktionella krav
+* Lösningen ska vara skalbar.
+* Datamodellen ska vara rimlig för Firebase.
+* UX ska vara enkel och tydlig.
+Arbetsprocess (mycket viktigt)
+Du ska:
+1. Först analysera kraven.
+2. Vara kritisk mot potentiella fallgropar.
+3. Föreslå arkitektur och datamodell.
+4. Ställa frågor om något är oklart.
+5. Inte skriva någon kod alls förrän jag bekräftat att designen är korrekt.
+Regler
+* Ändra inte befintlig kod utan att först motivera varför.
+* Anta inte framework (React/Vue/etc) om jag inte har sagt det.
+* Om något är otydligt: fråga istället för att gissa.
+```
+
+**Prompt 2**
+- *Syfte:* Svara på viktiga frågor som Claude hade.
+- *Förväntad output:* Efter denna prompt så ska Claude kunna arbeta och nå målet.
+- *Faktisk output:* Claude arbetade utan problem och implementerade inloggning med google auth och firebase.
+- *Vad fungerade, vad saknades?* Inloggningen fungerade som den skulle. Ingenting från vad vi specifierade i prompten gjordes fel eller saknades.
+```
+Svar på frågor:
+1. 1. Räcker med att ladda om vid siduppdatering. 2. Listan ska alltid börja om från standardalternativen. 3. Räcker med en textlista med paginering. 4. Det ska inte finnas offline-funktionalitet.
+2. Färger ska inte sparas.
+3. Ja användaren ska kunna radera historik.
+4. Jag har redan ett firebase projekt, du behöver endast ge mig instruktioner för hur kopplingen ska ske sedan.
+5. Ta 20 sedan paginering.
+6. Det räcker med disable-state.
+```
