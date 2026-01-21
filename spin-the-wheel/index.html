@@ -15,15 +15,50 @@
             height: 10px;
             animation: confetti-fall 3s linear forwards;
         }
+        .content-blurred {
+            filter: blur(8px);
+            pointer-events: none;
+            user-select: none;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen">
-    <!-- Huvudcontainer -->
-    <div class="container mx-auto px-4 py-8">
+    
+    <!-- AUTH OVERLAY (visas tills användaren är inloggad) -->
+    <div id="authOverlay" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl">
+            <div class="text-6xl mb-4">🎯</div>
+            <h2 class="text-3xl font-bold text-purple-600 mb-4">Spin the Wheel</h2>
+            <p class="text-gray-600 mb-6">Logga in för att spara dina resultat i molnet</p>
+            <button id="googleLoginBtn" class="w-full bg-white border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors font-medium text-lg flex items-center justify-center gap-3 shadow-sm">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <path fill="#4285F4" d="M19.6 10.23c0-.82-.1-1.42-.25-2.05H10v3.72h5.5c-.15.96-.74 2.31-2.04 3.22v2.45h3.16c1.89-1.73 2.98-4.3 2.98-7.34z"/>
+                    <path fill="#34A853" d="M13.46 15.13c-.83.59-1.96 1-3.46 1-2.64 0-4.88-1.74-5.68-4.15H1.07v2.52C2.72 17.75 6.09 20 10 20c2.7 0 4.96-.89 6.62-2.42l-3.16-2.45z"/>
+                    <path fill="#FBBC05" d="M3.99 10c0-.69.12-1.35.32-1.97V5.51H1.07A9.973 9.973 0 000 10c0 1.61.39 3.14 1.07 4.49l3.24-2.52c-.2-.62-.32-1.28-.32-1.97z"/>
+                    <path fill="#EA4335" d="M10 3.88c1.88 0 3.13.81 3.85 1.48l2.84-2.76C14.96.99 12.7 0 10 0 6.09 0 2.72 2.25 1.07 5.51l3.24 2.52C5.12 5.62 7.36 3.88 10 3.88z"/>
+                </svg>
+                Logga in med Google
+            </button>
+            <div id="loginError" class="hidden mt-4 text-red-600 text-sm"></div>
+        </div>
+    </div>
+
+    <!-- HUVUDCONTAINER (blir blurrad tills inloggning) -->
+    <div id="mainContent" class="container mx-auto px-4 py-8 content-blurred">
         <!-- Header -->
         <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-purple-600 mb-2">🎯 Spin the Wheel</h1>
-            <p class="text-gray-600">Kan inte bestämma dig? Låt hjulet välja åt dig!</p>
+            <div class="flex justify-between items-center max-w-7xl mx-auto">
+                <div class="flex-1"></div>
+                <div class="flex-1 text-center">
+                    <h1 class="text-4xl font-bold text-purple-600 mb-2">🎯 Spin the Wheel</h1>
+                    <p class="text-gray-600">Kan inte bestämma dig? Låt hjulet välja åt dig!</p>
+                </div>
+                <div class="flex-1 flex justify-end">
+                    <button id="logoutBtn" class="hidden bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm font-medium">
+                        Logga ut
+                    </button>
+                </div>
+            </div>
         </header>
 
         <!-- Huvudinnehåll: Layout med två kolumner -->
@@ -48,9 +83,20 @@
 
                 <!-- Historik -->
                 <div class="bg-white rounded-2xl shadow-xl p-6 mt-6">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">📜 Historik (5 senaste)</h2>
-                    <div id="history" class="space-y-2 w-full truncate">
-                        <p class="text-gray-500 italic">Inga resultat än...</p>
+                    <div class="flex justify-between items-center mb-4 cursor-pointer hover:bg-gray-50 -m-6 p-6 rounded-t-2xl transition-colors" id="historyHeader">
+                        <h2 class="text-xl font-bold text-gray-800">
+                            📜 Historik (<span id="resultCount">0</span> resultat)
+                        </h2>
+                        <span id="historyToggle" class="text-2xl text-gray-600 transition-transform">▼</span>
+                    </div>
+                    
+                    <div id="historyDropdown" class="hidden">
+                        <div id="historyList" class="space-y-2 max-h-96 overflow-y-auto">
+                            <p class="text-gray-500 italic">Inga resultat än...</p>
+                        </div>
+                        <button id="loadMoreBtn" class="hidden w-full mt-4 bg-purple-100 text-purple-600 px-4 py-2 rounded-lg hover:bg-purple-200 transition-colors font-medium">
+                            Visa fler 20
+                        </button>
                     </div>
                 </div>
             </div>
@@ -90,6 +136,15 @@
         </div>
     </div>
 
+    <!-- Firebase SDKs (version 9 compat mode) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase config -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Main script -->
     <script src="script.js"></script>
 </body>
 </html>

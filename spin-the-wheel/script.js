@@ -10,8 +10,11 @@ let items = [
     { text: 'Burger', color: '#95E1D3' }
 ];
 
-// Historik för de 5 senaste resultaten
-let history = [];
+// Firebase-relaterade variabler
+let currentUser = null;              // Firebase User objekt
+let allResults = [];                 // Alla resultat från Firestore
+let displayedResults = 20;           // Antal resultat som visas (paginering)
+let historyExpanded = false;         // Om historik-dropdown är öppen
 
 // Variabel för att hålla koll på om hjulet snurrar
 let isSpinning = false;
@@ -27,12 +30,275 @@ const ctx = canvas.getContext('2d');
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 // ============================================================================
+// FIREBASE AUTHENTICATION
+// ============================================================================
+
+/**
+ * Lyssnar på auth state changes
+ */
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        currentUser = user;
+        onUserLoggedIn();
+    } else {
+        currentUser = null;
+        onUserLoggedOut();
+    }
+});
+
+/**
+ * Hanterar inloggning
+ */
+document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+    try {
+        await auth.signInWithPopup(googleProvider);
+    } catch (error) {
+        console.error('Login error:', error);
+        const errorDiv = document.getElementById('loginError');
+        errorDiv.textContent = 'Inloggning misslyckades. Försök igen.';
+        errorDiv.classList.remove('hidden');
+    }
+});
+
+/**
+ * Hanterar utloggning
+ */
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+    if (confirm('Är du säker på att du vill logga ut?')) {
+        await auth.signOut();
+    }
+});
+
+/**
+ * Körs när användare loggat in
+ */
+function onUserLoggedIn() {
+    // Dölj overlay
+    document.getElementById('authOverlay').classList.add('hidden');
+    
+    // Ta bort blur från innehåll
+    document.getElementById('mainContent').classList.remove('content-blurred');
+    
+    // Visa logout-knapp
+    document.getElementById('logoutBtn').classList.remove('hidden');
+    
+    // Ladda användarens historik
+    loadUserHistory();
+}
+
+/**
+ * Körs när användare loggat ut
+ */
+function onUserLoggedOut() {
+    // Visa overlay
+    document.getElementById('authOverlay').classList.remove('hidden');
+    
+    // Lägg till blur på innehåll
+    document.getElementById('mainContent').classList.add('content-blurred');
+    
+    // Dölj logout-knapp
+    document.getElementById('logoutBtn').classList.add('hidden');
+    
+    // Rensa lokal data
+    allResults = [];
+    displayedResults = 20;
+    updateHistoryUI();
+}
+
+// ============================================================================
+// FIRESTORE OPERATIONS
+// ============================================================================
+
+/**
+ * Laddar all historik för inloggad användare
+ */
+async function loadUserHistory() {
+    if (!currentUser) return;
+    
+    try {
+        const snapshot = await db
+            .collection('users')
+            .doc(currentUser.uid)
+            .collection('results')
+            .orderBy('timestamp', 'desc')
+            .get();
+        
+        allResults = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        
+        displayedResults = 20;
+        updateHistoryUI();
+    } catch (error) {
+        console.error('Error loading history:', error);
+    }
+}
+
+/**
+ * Sparar ett resultat till Firestore
+ */
+async function saveResult(selectedItem, wheelItems) {
+    if (!currentUser) return;
+    
+    try {
+        const resultData = {
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            selectedItem: selectedItem,
+            wheelItems: wheelItems
+        };
+        
+        const docRef = await db
+            .collection('users')
+            .doc(currentUser.uid)
+            .collection('results')
+            .add(resultData);
+        
+        // Lägg till i lokal array (med klient-timestamp för omedelbar visning)
+        allResults.unshift({
+            id: docRef.id,
+            timestamp: new Date(),
+            selectedItem: selectedItem,
+            wheelItems: wheelItems
+        });
+        
+        updateHistoryUI();
+    } catch (error) {
+        console.error('Error saving result:', error);
+        alert('Kunde inte spara resultatet. Kontrollera din internetanslutning.');
+    }
+}
+
+/**
+ * Raderar ett resultat från Firestore
+ */
+async function deleteResult(resultId) {
+    if (!currentUser) return;
+    
+    if (!confirm('Är du säker på att du vill radera detta resultat?')) return;
+    
+    try {
+        await db
+            .collection('users')
+            .doc(currentUser.uid)
+            .collection('results')
+            .doc(resultId)
+            .delete();
+        
+        // Ta bort från lokal array
+        allResults = allResults.filter(r => r.id !== resultId);
+        updateHistoryUI();
+    } catch (error) {
+        console.error('Error deleting result:', error);
+        alert('Kunde inte radera resultatet.');
+    }
+}
+
+// ============================================================================
+// HISTORIK UI
+// ============================================================================
+
+/**
+ * Uppdaterar historik-UI med resultat från Firestore
+ */
+function updateHistoryUI() {
+    const historyList = document.getElementById('historyList');
+    const resultCount = document.getElementById('resultCount');
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    
+    // Uppdatera räknare
+    resultCount.textContent = allResults.length;
+    
+    if (allResults.length === 0) {
+        historyList.innerHTML = '<p class="text-gray-500 italic">Inga resultat än...</p>';
+        loadMoreBtn.classList.add('hidden');
+        return;
+    }
+    
+    // Visa bara de första X resultaten
+    const resultsToShow = allResults.slice(0, displayedResults);
+    
+    historyList.innerHTML = resultsToShow.map((result, index) => {
+        const timestamp = result.timestamp?.toDate ? result.timestamp.toDate() : result.timestamp;
+        const dateStr = formatDate(timestamp);
+        
+        return `
+            <div class="flex items-center justify-between gap-2 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div class="flex-1 min-w-0">
+                    <span class="text-gray-600 font-medium">${index + 1}.</span>
+                    <span class="text-gray-800 font-semibold">${result.selectedItem}</span>
+                    <span class="text-gray-500 text-sm">(${result.wheelItems.length} alternativ)</span>
+                    <span class="text-gray-400 text-xs block">${dateStr}</span>
+                </div>
+                <button onclick="deleteResult('${result.id}')" class="text-red-600 hover:text-red-800 text-xl px-2" title="Radera">
+                    🗑️
+                </button>
+            </div>
+        `;
+    }).join('');
+    
+    // Visa/dölj "Visa fler"-knapp
+    if (allResults.length > displayedResults) {
+        loadMoreBtn.classList.remove('hidden');
+    } else {
+        loadMoreBtn.classList.add('hidden');
+    }
+}
+
+/**
+ * Formaterar datum för visning
+ */
+function formatDate(date) {
+    if (!date) return '';
+    
+    const d = new Date(date);
+    const now = new Date();
+    const diffMs = now - d;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    
+    if (diffMins < 1) return 'Nyss';
+    if (diffMins < 60) return `${diffMins} min sedan`;
+    if (diffHours < 24) return `${diffHours} tim sedan`;
+    if (diffDays < 7) return `${diffDays} dag${diffDays > 1 ? 'ar' : ''} sedan`;
+    
+    const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return d.toLocaleDateString('sv-SE', options);
+}
+
+/**
+ * Toggle historik dropdown
+ */
+document.getElementById('historyHeader').addEventListener('click', () => {
+    const dropdown = document.getElementById('historyDropdown');
+    const toggle = document.getElementById('historyToggle');
+    
+    historyExpanded = !historyExpanded;
+    
+    if (historyExpanded) {
+        dropdown.classList.remove('hidden');
+        toggle.style.transform = 'rotate(180deg)';
+    } else {
+        dropdown.classList.add('hidden');
+        toggle.style.transform = 'rotate(0deg)';
+    }
+});
+
+/**
+ * Ladda fler resultat (paginering)
+ */
+document.getElementById('loadMoreBtn').addEventListener('click', () => {
+    displayedResults += 20;
+    updateHistoryUI();
+});
+
+// ============================================================================
 // LJUDEFFEKTER
 // ============================================================================
 
 /**
  * Spelar ett spinljud när hjulet börjar snurra
- * Använder Web Audio API för att skapa en sinusvåg
  */
 function playSpinSound() {
     const oscillator = audioContext.createOscillator();
@@ -53,7 +319,6 @@ function playSpinSound() {
 
 /**
  * Spelar ett resultatljud när hjulet stannat
- * Skapar en ljusare och längre ton än spinljudet
  */
 function playResultSound() {
     const oscillator = audioContext.createOscillator();
@@ -78,7 +343,6 @@ function playResultSound() {
 
 /**
  * Ritar hjulet på canvas baserat på nuvarande objekt och rotation
- * Använder canvasens 2D-kontext för att rita cirkelsektorer
  */
 function drawWheel() {
     const centerX = canvas.width / 2;
@@ -157,10 +421,9 @@ function drawWheel() {
 
 /**
  * Startar snurret med en slumpmässig rotation
- * Använder requestAnimationFrame för smidig animation
  */
 function spinWheel() {
-    if (isSpinning || items.length === 0) return;
+    if (isSpinning || items.length === 0 || !currentUser) return;
     
     isSpinning = true;
     playSpinSound();
@@ -175,7 +438,6 @@ function spinWheel() {
     
     /**
      * Animationsfunktion som anropas för varje frame
-     * Använder easing för att få en naturlig inbromsning
      */
     function animate() {
         const currentTime = Date.now();
@@ -204,7 +466,6 @@ function spinWheel() {
 
 /**
  * Räknar ut vilket objekt hjulet landade på
- * Baserat på den slutliga rotationen
  */
 function getSelectedItem() {
     // Pekaren pekar åt höger, kompensera för det
@@ -220,10 +481,9 @@ function getSelectedItem() {
 function showResult() {
     const selectedItem = getSelectedItem();
     
-    // Lägg till i historik
-    history.unshift(selectedItem.text);
-    if (history.length > 5) history.pop();
-    updateHistory();
+    // Spara till Firestore
+    const wheelItemsText = items.map(item => item.text);
+    saveResult(selectedItem.text, wheelItemsText);
     
     // Visa popup
     const popup = document.getElementById('resultPopup');
@@ -346,25 +606,6 @@ function updateItemsList() {
             <span class="flex-1 font-medium text-gray-800">${item.text}</span>
             <button onclick="changeColor(${index})" class="text-blue-600 hover:text-blue-800 text-sm font-medium px-2">Färg</button>
             <button onclick="removeItem(${index})" class="text-red-600 hover:text-red-800 text-sm font-medium px-2">Ta bort</button>
-        </div>
-    `).join('');
-}
-
-/**
- * Uppdaterar historiken i UI:t
- */
-function updateHistory() {
-    const historyDiv = document.getElementById('history');
-    
-    if (history.length === 0) {
-        historyDiv.innerHTML = '<p class="text-gray-500 italic">Inga resultat än...</p>';
-        return;
-    }
-    
-    historyDiv.innerHTML = history.map((item, index) => `
-        <div class="flex items-center gap-2 p-2 bg-gray-50 rounded">
-            <span class="text-gray-600 font-medium">${index + 1}.</span>
-            <span class="text-gray-800">${item}</span>
         </div>
     `).join('');
 }
